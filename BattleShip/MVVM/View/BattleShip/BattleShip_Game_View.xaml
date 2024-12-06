@@ -1,0 +1,249 @@
+﻿<UserControl x:Class="WPF_App.MVVM.View.BattleShip_Game_View"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WPF_App.MVVM.View"
+             xmlns:fade="clr-namespace:VsrFade.Controls;assembly=VsrFade"
+             xmlns:toast="clr-namespace:ToastManager;assembly=ToastManager"   
+             xmlns:vm="clr-namespace:WPF_App.MVVM.ViewModel"   
+             xmlns:wpf="clr-namespace:WPF_App.Core.WPF" 
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.DataContext>
+        <vm:BattleShip_Game_ViewModel/>
+    </UserControl.DataContext>
+
+    <UserControl.Resources>
+        <Style TargetType="Path">
+            <Setter Property="Stretch" Value="Uniform" />
+            <Setter Property="Height" Value="15" />
+            <Setter Property="Fill" Value="White" />
+        </Style>
+        <Style TargetType="fade:FadeButton">
+            <Setter Property="Foreground" Value="Black" />
+            <Setter Property="FontWeight" Value="Medium" />
+            <Setter Property="CornerRadius" Value="5" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}" />
+            <Setter Property="Background" Value="{DynamicResource ButtonBackground}"/>
+            <Setter Property="DisabledBackgroundColor" Value="#5555" />
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <CubicEase EasingMode="EaseOut" x:Key="cubicEaseOut"/>
+    </UserControl.Resources>
+
+    
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+        <Grid>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+ 
+            <Border Grid.Column="0" Margin="10">
+                <DockPanel>
+                    
+                    <!--TURN-->
+                    <Border DockPanel.Dock="Top">
+                        <UniformGrid Columns="1">
+                            <UniformGrid.Resources>
+                                <Style TargetType="Border" x:Key="baseGrid">
+                                    <Setter Property="CornerRadius" Value="10"/>
+                                    <Setter Property="Background" Value="#5FFF"/>
+                                    <Setter Property="Opacity" Value="0.3"/>
+                                    <Setter Property="Height" Value="50"/>
+                                    <Setter Property="RenderTransformOrigin" Value="0,0.5"/>
+                                    <Setter Property="RenderTransform">
+                                        <Setter.Value>
+                                            <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsEnabled" Value="true">
+                                            <Setter Property="Opacity" Value="1"/>
+                                            <Setter Property="Height" Value="60"/>
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleX)" To="1" Duration="0:0:0.2" EasingFunction="{StaticResource cubicEaseOut}"/>
+                                                        <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleY)" To="1" Duration="0:0:0.2" EasingFunction="{StaticResource cubicEaseOut}"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                            <Trigger.ExitActions>
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleX)" To="0.8" Duration="0:0:0.2" EasingFunction="{StaticResource cubicEaseOut}"/>
+                                                        <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleY)" To="0.8" Duration="0:0:0.2" EasingFunction="{StaticResource cubicEaseOut}"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.ExitActions>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </UniformGrid.Resources>
+                            
+                            <Border>
+                                <Border.Style>
+                                    <Style TargetType="Border" BasedOn="{StaticResource baseGrid}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMyTurn}" Value="true">
+                                                <Setter Property="IsEnabled" Value="true"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                                <TextBlock Text="My Turn" FontSize="20" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="10"/>
+                            </Border>
+
+                            <Border>
+                                <Border.Style>
+                                    <Style TargetType="Border" BasedOn="{StaticResource baseGrid}">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMyTurn}" Value="false">
+                                                <Setter Property="IsEnabled" Value="true"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                                <TextBlock Text="Opponent" FontSize="20" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="10"/>
+                            </Border>
+
+                        </UniformGrid>
+                    </Border>
+
+                    <!--Player grid-->
+                    <Viewbox Stretch="Uniform" DockPanel.Dock="Top" Margin="0,10">
+                        <Border CornerRadius="10" VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <Border.Background>
+                                <ImageBrush ImageSource="/Ressources/Images/sea.jpg"/>
+                            </Border.Background>
+                            <Grid x:Name="PlayerFieldGrid" Height="400" Width="400" Margin="40,40,10,10">
+                                <Grid.Resources>
+                                    <Style TargetType="local:BorderCell">
+                                        <Setter Property="Background" Value="#3FFF"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding DataContext.HasShip, RelativeSource={RelativeSource Mode=Self}}" Value="true">
+                                                <Setter Property="Background" Value="#5FFF"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding DataContext.IsMissed, RelativeSource={RelativeSource Mode=Self}}" Value="true">
+                                                <Setter Property="Background" Value="LightGray"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding DataContext.IsHit, RelativeSource={RelativeSource Mode=Self}}" Value="true">
+                                                <Setter Property="Background" Value="Red"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontSize" Value="20"/>
+                                        <Setter Property="Foreground" Value="#9000"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                        <Setter Property="TextAlignment" Value="Center"/>
+                                    </Style>
+                                </Grid.Resources>
+                            </Grid>
+                        </Border>
+                    </Viewbox>
+                    
+                    <!--Win/Loose-->
+                    <Border CornerRadius="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Visibility" Value="Hidden"/>
+                                <Setter Property="Background" Value="#2FFF"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsWinned}" Value="true">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsLost}" Value="true">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+
+                        <StackPanel Margin="20,10">
+                            <TextBlock FontSize="20" FontWeight="Bold" Foreground="White" VerticalAlignment="Center" Margin="10">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsWinned}" Value="true">
+                                                <Setter Property="Text" Value="Gagné !"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsLost}" Value="true">
+                                                <Setter Property="Text" Value="Perdu..."/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+
+                            <fade:FadeButton Height="30" Width="auto" Command="{Binding NewGameCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <Path Data="{DynamicResource Cached}" Fill="Black" Margin="0,0,10,0"/>
+                                    <TextBlock Text="Rejouer"/>
+                                </StackPanel>
+                            </fade:FadeButton>
+                        </StackPanel>                        
+                    </Border>
+                </DockPanel>    
+            </Border>
+
+            <!--Opponent Grid-->
+            <Border Grid.Column="1" Margin="10">
+                <Viewbox Stretch="Uniform">
+                    <Border CornerRadius="10" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <Border.Background>
+                            <ImageBrush ImageSource="/Ressources/Images/sea.jpg"/>
+                        </Border.Background>
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMyTurn}" Value="false">
+                                        <Setter Property="Opacity" Value="0.6"/>
+                                        <Setter Property="IsHitTestVisible" Value="False"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
+                        <Grid x:Name="OpponentFieldGrid" Height="400" Width="400" Margin="40,40,10,10">
+                            <Grid.Resources>
+                                <Style TargetType="local:BorderCell">
+                                    <Setter Property="Background" Value="#3FFF"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding DataContext.IsMissed, RelativeSource={RelativeSource Mode=Self}}" Value="true">
+                                            <Setter Property="Background" Value="LightGray"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding DataContext.IsHit, RelativeSource={RelativeSource Mode=Self}}" Value="true">
+                                            <Setter Property="Background" Value="Red"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontSize" Value="20"/>
+                                    <Setter Property="Foreground" Value="#9000"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                </Style>
+                            </Grid.Resources>
+                        </Grid>
+                    </Border>
+                </Viewbox>
+            </Border>
+
+        </Grid>
+
+    </Grid>
+</UserControl>
+

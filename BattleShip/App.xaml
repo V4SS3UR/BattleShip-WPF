@@ -1,0 +1,32 @@
+﻿<Application x:Class="WPF_App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"             
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:fade="clr-namespace:VsrFade.Controls;assembly=VsrFade"
+             mc:Ignorable="d"
+             StartupUri="MVVM/View/MainWindow_View.xaml">
+    <Application.Resources>
+
+        <ResourceDictionary>         
+            
+            <ResourceDictionary.MergedDictionaries>
+
+                <ResourceDictionary x:Name="ThemeDictionary">
+                    <ResourceDictionary.MergedDictionaries>
+                        <ResourceDictionary Source="Ressources/Themes/Fog Gray.xaml"/>
+                    </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+
+                <ResourceDictionary Source="Ressources/ViewDataTemplate.xaml"/>                
+                <ResourceDictionary Source="Ressources/DefaultStyle.xaml"/>
+                <ResourceDictionary Source="Ressources/Geometry.xaml"/>
+                <ResourceDictionary Source="Ressources/ToastDialog.xaml"/>
+                <ResourceDictionary Source="Ressources/ScrollBar.xaml"/>
+
+            </ResourceDictionary.MergedDictionaries>            
+
+        </ResourceDictionary>
+        
+    </Application.Resources>
+</Application>
