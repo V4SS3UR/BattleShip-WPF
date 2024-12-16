@@ -1,5 +1,7 @@
 ﻿using BattleShipServer;
 using System;
+using System.Collections.Generic;
+using System.Windows.Documents;
 using System.Windows.Input;
 using VsrFade.Extensions;
 using WPF_App.Core;
@@ -38,7 +40,10 @@ namespace WPF_App.MVVM.ViewModel
 
 
         private Player _player;
+        private Player _opponentAgent;
+
         private Client _client;
+        private List<(int X, int Y)> triedCells;
 
         public ICommand NewGameCommand { get; set; }
 
@@ -52,6 +57,8 @@ namespace WPF_App.MVVM.ViewModel
 
         internal void SetClient(Client client)
         {
+            triedCells = new List<(int X, int Y)>();
+
             _client = client;
 
             _client.NewTurn += Client_NewTurn;
@@ -61,7 +68,12 @@ namespace WPF_App.MVVM.ViewModel
 
             _client.Winned += Client_Winned;
             _client.Lost += Client_Lost;
-        }    
+        }
+
+        private void _client_Lost()
+        {
+            throw new NotImplementedException();
+        }
 
         internal Player GetPlayer()
         {
@@ -76,7 +88,12 @@ namespace WPF_App.MVVM.ViewModel
         {
             if (_player.State == PlayerState.TakingTurn)
             {
-                _client.FireShot(x, y);
+                // Fire only if the cell is not already tried
+                if (!triedCells.Contains((x, y)))
+                {
+                    _client.FireShot(x, y);
+                    triedCells.Add((x, y));
+                }
             }
             else
             {
@@ -144,12 +161,12 @@ namespace WPF_App.MVVM.ViewModel
         {
             if (IsMyTurn)
             {
-                // Opponent missed me
+                // I missed the opponent                
                 OpponentMissed?.Invoke(arg1, arg2);
             }
             else
             {
-                // I missed the opponent
+                // Opponent missed me
                 PlayerMissed?.Invoke(arg1, arg2);
             }
         }

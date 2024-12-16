@@ -1,4 +1,5 @@
-﻿using BattleShip.MVVM.View.BattleShip;
+﻿using BattleShip.MVVM.Model;
+using BattleShip.MVVM.View.BattleShip;
 using BattleShipServer;
 using System;
 using System.Collections.ObjectModel;
@@ -31,6 +32,7 @@ namespace WPF_App.MVVM.ViewModel
         public ObservableCollection<Message> ChatMessages { get; set; }
 
         private Player _player;
+        private OpponentAgent _opponentAgent;
         private Client _client;
 
         public ICommand SendMessageCommand { get; }
@@ -40,6 +42,7 @@ namespace WPF_App.MVVM.ViewModel
             var connectionView = new BattleShip_Connection_View();
             var vm = connectionView.DataContext as BattleShip_Connection_ViewModel;
             vm.ConnectedToServer += ConnectionView_ConnectedToServer;
+            vm.PlayLocal += ConnectionView_PlayLocal;
 
             _player = new Player("Me");
 
@@ -54,6 +57,7 @@ namespace WPF_App.MVVM.ViewModel
                 _ => IsConnected && !string.IsNullOrEmpty(MessageToSend));
         }
 
+        
 
         private void StartServer()
         {
@@ -85,8 +89,13 @@ namespace WPF_App.MVVM.ViewModel
             _client.NewGame += Client_NewGame;
             IsConnected = true;
 
-            this.CurrentView = new BattleShip_Loading_View();
+            this.CurrentView = new BattleShip_Loading_View();           
         }
+        private void ConnectionView_PlayLocal()
+        {
+            _opponentAgent = new OpponentAgent();
+        }
+
         private void Client_MessageReceived(string arg1, MessageSenderType arg2)
         {
             Message message = new Message(arg1) 
@@ -100,7 +109,6 @@ namespace WPF_App.MVVM.ViewModel
                 ChatMessages.Add(message);
             });
         }
-
         private void Client_ShipPlacing()
         {
             App.Current.Dispatcher.Invoke(() =>
@@ -114,7 +122,6 @@ namespace WPF_App.MVVM.ViewModel
                 this.CurrentView = shipPlacementView;
             });
         }
-
         private void Client_NewGame()
         {
             App.Current.Dispatcher.Invoke(() =>
@@ -133,6 +140,17 @@ namespace WPF_App.MVVM.ViewModel
                 var vm = gameView.DataContext as BattleShip_Game_ViewModel;
                 vm.SetClient(_client);
                 vm.SetPlayer(_player);
+
+                if(_opponentAgent != null)
+                {
+                    _opponentAgent.ProbabilityMapUpdated += map =>
+                    {
+                        App.Current.Dispatcher.Invoke(() =>
+                        {
+                            gameView.UpdateProbabilityMap(map);
+                        });
+                    };
+                }                
 
                 this.CurrentView = gameView;
             });

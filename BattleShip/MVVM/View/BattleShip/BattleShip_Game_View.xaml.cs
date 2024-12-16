@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WPF_App.MVVM.ViewModel;
 
 namespace WPF_App.MVVM.View
@@ -240,7 +232,20 @@ namespace WPF_App.MVVM.View
                 for (int j = 0; j < 10; j++)
                 {
                     var cell = new BorderCell();
+                    cell.Name = $"cell{i}{j}";
                     cell.SetPosition(i, j);
+                    grid.Children.Add(cell);
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    var cell = new BorderCell();
+                    cell.Name = $"probabilityMap{i}{j}";
+                    cell.SetPosition(i, j);
+                    cell.Opacity = 0.5;
                     grid.Children.Add(cell);
                 }
             }
@@ -380,6 +385,31 @@ namespace WPF_App.MVVM.View
         private void OtherFieldGrid_CellClicked(int arg1, int arg2)
         {
             viewModel.OpponentFieldCellClicked(arg1, arg2);
+        }
+
+
+
+        public void UpdateProbabilityMap(double[,] map)
+        {
+            var playerGrid = this.PlayerFieldGrid;
+
+            // Get all the cells
+            var cells = playerGrid.Children.OfType<BorderCell>().Where(o => o.Name.StartsWith("probabilityMap")).ToArray();
+
+            // Update the color of the cells from red = 0 to red = 255 based on the max probability
+
+            double max = map.Cast<double>().Max();
+
+            foreach (var cell in cells)
+            {
+                int x = Grid.GetColumn(cell);
+                int y = Grid.GetRow(cell);
+                double value = map[x, y];
+
+                // from black to green
+                byte color = (byte)(255 * value / max);
+                cell.Background = new SolidColorBrush(Color.FromArgb(color, (byte)(255 - color), color, 0));
+            }
         }
     }
 }

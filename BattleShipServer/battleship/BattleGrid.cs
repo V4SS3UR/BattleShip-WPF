@@ -29,6 +29,10 @@ namespace BattleShipServer
         {
             return Cells[x, y];
         }
+        public Cell[] GetCells()
+        {
+            return Cells.Cast<Cell>().ToArray();
+        }
 
         // Add a ship to the grid at a specific position with orientation (horizontal or vertical)
         public bool PlaceShip(Ship ship, int x, int y, bool isHorizontal)

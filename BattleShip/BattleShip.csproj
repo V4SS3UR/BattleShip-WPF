@@ -136,6 +136,7 @@
     <Compile Include="Core\WPF\ObservableObject.cs" />
     <Compile Include="Core\WPF\RelayCommand.cs" />
     <Compile Include="MVVM\Model\Message.cs" />
+    <Compile Include="MVVM\Model\OpponentAgent.cs" />
     <Compile Include="MVVM\Model\User.cs" />
     <Compile Include="MVVM\ViewModel\BattleShip\BattleShip_Connection_ViewModel.cs" />
     <Compile Include="MVVM\ViewModel\BattleShip\BattleShip_Game_ViewModel.cs" />

@@ -11,6 +11,7 @@ namespace WPF_App.MVVM.ViewModel
     internal class BattleShip_Connection_ViewModel: ObservableObject
     {
         public event Action<BattleShipServer.Client> ConnectedToServer;
+        public event Action PlayLocal;
 
         private bool _connecting; public bool Connecting
         {
@@ -32,7 +33,9 @@ namespace WPF_App.MVVM.ViewModel
             get => _opponentIp;
             set { _opponentIp = value; OnPropertyChanged(); }
         }
+
         public ICommand ConnectCommand { get; set; }
+        public ICommand PlayLocalCommand { get; set; }
 
         private BattleShipServer.Client client;
 
@@ -46,6 +49,10 @@ namespace WPF_App.MVVM.ViewModel
             ConnectCommand = new RelayCommand(
                 async _ => await ConnectToServer(),
                 _ => !string.IsNullOrEmpty(OpponentIp) && !Connecting &&!Connected);
+
+            PlayLocalCommand = new RelayCommand(
+                async _ => await PlayLocalGame(),
+                _ => !Connecting && !Connected);
         }
 
         private async Task ConnectToServer()
@@ -63,6 +70,12 @@ namespace WPF_App.MVVM.ViewModel
             {
                 Connecting = false;
             }
+        }
+
+        private async Task PlayLocalGame()
+        {
+            PlayLocal?.Invoke();
+            await ConnectToServer();
         }
     }
 }
