@@ -1,8 +1,10 @@
 # BattleShip WPF Project
 
 BattleShip WPF is a two-player game implementation of the classic Battleship game. It was created to explore TCP networking concepts in a practical context and to take on the challenge of building an interactive WPF user interface that integrates seamlessly with the networked gameplay mechanics. This app is able to host a game or connect to a host.
-
-![Intro](path/to/intro-placeholder.png)
+<p align="center">
+    <img src="https://github.com/user-attachments/assets/167611a0-6ab4-43d1-ba16-4a784f719681" width="48%">  
+    <img src="https://github.com/user-attachments/assets/ed75deb9-48c4-4c9b-8749-23d7dbb6681d" width="48%">          
+</p>
 
 ## Project Structure
 - **BattleShipServer**: This project contains the server-side logic for the Battleship game.
@@ -67,6 +69,9 @@ BattleShip WPF is a two-player game implementation of the classic Battleship gam
 - **Communication Protocol**: The server uses a custom message protocol to communicate with clients. Messages include game actions, results, and chat messages.
 - **Error Handling**: The server includes mechanisms for handling errors and ensuring reliable communication with clients.
 - **Chat Management**: The server handles chat messages sent by clients and broadcasts them to all connected clients.
+<p align="center">
+         
+</p>
 
 ### Client Interaction
 - **Connection**: The app starts with the local IP displayed. The user can click "Créer" to host the game or "Rejoindre" with an IP to connect to a host. Then the app waits for the server to inform that two players are ready.
@@ -83,28 +88,32 @@ BattleShip WPF is a two-player game implementation of the classic Battleship gam
 - **User Interface**: The UI is built using WPF for an interactive and visually appealing experience. It includes interactive game grids, custom controls, and visual feedback for game events.
 - **Responsive Design**: The design accommodates different screen sizes to ensure a consistent user experience.
 
+
 ## Screenshots
 
 ### Connection
-![Connection](path/to/connection-placeholder.png)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/e3f1f4e4-c74d-4d97-abc9-94a2b66e71d8" width="60%"> 
+</p>
 
-### Ship Placement
-![Ship Placement](path/to/ship-placement-placeholder.png)
 
-### Ship Overlapping and Overriding Game Area During Placement
-![Ship Overlapping](path/to/ship-overlapping-placeholder.png)
+### Ship placement
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d66da080-9601-4cd5-89ed-248457c31691" width="60%">  
+  <img src="https://github.com/user-attachments/assets/ac91fa93-7531-40ba-a1dc-0f047d1f1d63" width="60%">  
+  <img src="https://github.com/user-attachments/assets/26987127-6068-4dbe-a206-d40fd587b1ed" width="60%">  
+</p>
 
-### Main Game
-![Main Game](path/to/main-game-placeholder.png)
+### In game
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/07f4d62d-b071-4f5d-93ad-0f4bb3e7ea2b" width="60%">  
+</p>
 
-### Miss and Lose Feedback
-![Miss and Lose](path/to/miss-lose-placeholder.png)
+### Chat
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/26e977c1-d3e8-4376-9b60-243d96f1546f" width="60%">  
+</p>
 
-### Chats Between Players
-![Player Chat](path/to/player-chat-placeholder.png)
-
-### Chat Sent by the Server
-![Server Chat](path/to/server-chat-placeholder.png)
 
 ## Future Enhancements
 
