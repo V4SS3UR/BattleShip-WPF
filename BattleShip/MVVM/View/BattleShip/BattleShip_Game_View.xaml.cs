@@ -214,7 +214,7 @@ namespace WPF_App.MVVM.View
                 opponentCell.IsMissed = true;
             });
         }
-        
+
 
         private void DrawPlayerGrid()
         {
@@ -331,10 +331,23 @@ namespace WPF_App.MVVM.View
                 for (int j = 0; j < 10; j++)
                 {
                     var cell = new BorderCell();
+                    cell.Name = $"cell{i}{j}";
                     cell.MouseEnter += Cell_MouseEnter;
                     cell.MouseLeave += Cell_MouseLeave;
                     cell.CellClicked += OtherFieldGrid_CellClicked;
                     cell.SetPosition(i, j);
+                    grid.Children.Add(cell);
+                }
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    var cell = new BorderCell();
+                    cell.Name = $"probabilityMap{i}{j}";
+                    cell.SetPosition(i, j);
+                    cell.Opacity = 0.5;
                     grid.Children.Add(cell);
                 }
             }
@@ -366,8 +379,8 @@ namespace WPF_App.MVVM.View
         private void Cell_MouseLeave(object sender, MouseEventArgs e)
         {
             //Get the temp border of the grid position
-            var cell = sender as BorderCell; 
-            
+            var cell = sender as BorderCell;
+
             int x = Grid.GetColumn(cell);
             int y = Grid.GetRow(cell);
 
@@ -389,7 +402,7 @@ namespace WPF_App.MVVM.View
 
 
 
-        public void UpdateProbabilityMap(double[,] map)
+        public void UpdatePlayerProbabilityMap(double[,] map)
         {
             var playerGrid = this.PlayerFieldGrid;
 
@@ -406,6 +419,26 @@ namespace WPF_App.MVVM.View
                 int y = Grid.GetRow(cell);
                 double value = map[x, y];
 
+                // from black to green
+                byte color = (byte)(255 * value / max);
+                cell.Background = new SolidColorBrush(Color.FromArgb(color, (byte)(255 - color), color, 0));
+            }
+        }
+        public void UpdateOpponentProbabilityMap(double[,] map)
+        {
+            var opponentGrid = this.OpponentFieldGrid;
+
+            // Get all the cells
+            var cells = opponentGrid.Children.OfType<BorderCell>().Where(o => o.Name.StartsWith("probabilityMap")).ToArray();
+
+            // Update the color of the cells from red = 0 to red = 255 based on the max probability
+            double max = map.Cast<double>().Max();
+
+            foreach (var cell in cells)
+            {
+                int x = Grid.GetColumn(cell);
+                int y = Grid.GetRow(cell);
+                double value = map[x, y];
                 // from black to green
                 byte color = (byte)(255 * value / max);
                 cell.Background = new SolidColorBrush(Color.FromArgb(color, (byte)(255 - color), color, 0));

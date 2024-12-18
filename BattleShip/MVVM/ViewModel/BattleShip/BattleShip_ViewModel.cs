@@ -43,12 +43,11 @@ namespace WPF_App.MVVM.ViewModel
             var vm = connectionView.DataContext as BattleShip_Connection_ViewModel;
             vm.ConnectedToServer += ConnectionView_ConnectedToServer;
             vm.PlayLocal += ConnectionView_PlayLocal;
-
-            _player = new Player("Me");
+            vm.PlayAuto += ConnectionView_PlayAuto;
 
             this.CurrentView = connectionView;
 
-            ChatMessages = new ObservableCollection<Model.Message>();
+            ChatMessages = new ObservableCollection<Message>();
 
             StartServer();
 
@@ -89,11 +88,63 @@ namespace WPF_App.MVVM.ViewModel
             _client.NewGame += Client_NewGame;
             IsConnected = true;
 
+            _player = new Player("Me");
+
             this.CurrentView = new BattleShip_Loading_View();           
         }
         private void ConnectionView_PlayLocal()
         {
+            _player = new Player("Me");
             _opponentAgent = new OpponentAgent();
+            _opponentAgent.ConnectToServer();
+        }
+
+        private void ConnectionView_PlayAuto()
+        {
+            var _opponentAgent = new OpponentAgent();
+            _opponentAgent.ConnectToServer();
+            var opponentClient = _opponentAgent.GetClient();
+            var opponentPlayer = _opponentAgent.GetPlayer();
+            opponentClient.NewGame += () => { ToastManager.Toast.GetToast("BattleShipToast").CloseToast(); };
+
+            var _opponentAgent2 = new OpponentAgent();
+            _opponentAgent2.ConnectToServer();
+            var opponentClient2 = _opponentAgent2.GetClient();
+            var opponentPlayer2 = _opponentAgent2.GetPlayer();
+            opponentClient2.NewGame += () => { ToastManager.Toast.GetToast("BattleShipToast").CloseToast(); };
+
+            opponentClient.GameStart += () =>
+            {
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    var gameView = new BattleShip_Game_View();
+                    var vm = gameView.DataContext as BattleShip_Game_ViewModel;
+                    vm.SetClient(opponentClient);
+                    vm.SetPlayer(opponentPlayer);
+
+                    this.CurrentView = gameView;
+
+                    if (_opponentAgent != null)
+                    {
+                        _opponentAgent.ProbabilityMapUpdated += map =>
+                        {
+                            App.Current.Dispatcher.Invoke(() =>
+                            {
+                                gameView.UpdatePlayerProbabilityMap(map);
+                            });
+                        };
+
+                        _opponentAgent2.ProbabilityMapUpdated += map =>
+                        {
+                            App.Current.Dispatcher.Invoke(() =>
+                            {
+                                gameView.UpdateOpponentProbabilityMap(map);
+                            });
+                        };
+                    }
+
+                });
+            };            
         }
 
         private void Client_MessageReceived(string arg1, MessageSenderType arg2)
@@ -147,7 +198,7 @@ namespace WPF_App.MVVM.ViewModel
                     {
                         App.Current.Dispatcher.Invoke(() =>
                         {
-                            gameView.UpdateProbabilityMap(map);
+                            gameView.UpdatePlayerProbabilityMap(map);
                         });
                     };
                 }                

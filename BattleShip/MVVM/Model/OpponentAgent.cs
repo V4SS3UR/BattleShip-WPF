@@ -9,11 +9,15 @@ namespace BattleShip.MVVM.Model
 {
     internal class OpponentAgent
     {
+        private static Random _random = new Random();
+
         public event Action<double[,]> ProbabilityMapUpdated;
 
         private Client _client;
-        private Player _opponentAgent;
+        private Player _opponentPlayer;
         private BattleGrid _battleGrid;
+
+        // Random random seed
 
         private bool _isMyTurn;
 
@@ -21,11 +25,11 @@ namespace BattleShip.MVVM.Model
 
         public OpponentAgent()
         {
-            _opponentAgent = new Player("Opponent");
+            _opponentPlayer = new Player("Opponent");
             _battleGrid = new BattleGrid();
 
             _probabilityMap = new double[10, 10];
-
+                        
             _client = new Client();
             _client.ShipPlacing += _client_ShipPlacing;
             _client.NewTurn += _client_NewTurn;
@@ -34,11 +38,12 @@ namespace BattleShip.MVVM.Model
             _client.Miss += _client_Miss;
             _client.Winned += Client_Winned;
             _client.Lost += Client_Lost;
+        } 
 
-            ConnectToServer();
-        }
+        public Client GetClient() => this._client;
+        public Player GetPlayer() => this._opponentPlayer;
 
-        private async Task ConnectToServer()
+        public async Task ConnectToServer()
         {
             try
             {
@@ -50,23 +55,20 @@ namespace BattleShip.MVVM.Model
             }
         }
 
-
-
         private void _client_ShipPlacing()
         {            
             // Place ships randomly
-            Random random = new Random();
-            foreach (var shipSize in _opponentAgent.ShipRules)
+            foreach (var shipSize in _opponentPlayer.ShipRules)
             {
                 Ship ship = new Ship(shipSize);
-                bool isHorizontal = random.Next(2) == 0;
-                int x = random.Next(0, 9);
-                int y = random.Next(0, 9);
-                while (!_opponentAgent.PlaceShip(ship, x, y, isHorizontal))
+                bool isHorizontal = _random.Next(2) == 0;
+                int x = _random.Next(0, 9);
+                int y = _random.Next(0, 9);
+                while (!_opponentPlayer.PlaceShip(ship, x, y, isHorizontal))
                 {
-                    isHorizontal = random.Next(2) == 0;
-                    x = random.Next(10);
-                    y = random.Next(10);
+                    isHorizontal = _random.Next(2) == 0;
+                    x = _random.Next(10);
+                    y = _random.Next(10);
                 }
 
                 _client.PlaceShip(x, y, isHorizontal, shipSize);
@@ -75,7 +77,7 @@ namespace BattleShip.MVVM.Model
         private void _client_NewTurn(bool myTurn)
         {
             _isMyTurn = myTurn;
-            _opponentAgent.State = myTurn ? PlayerState.TakingTurn : PlayerState.WaitingForTurn;
+            _opponentPlayer.State = myTurn ? PlayerState.TakingTurn : PlayerState.WaitingForTurn;
 
             // If it's my turn => I play
             if (myTurn)
@@ -118,7 +120,7 @@ namespace BattleShip.MVVM.Model
             if (!_isMyTurn) return;
 
             _battleGrid.Cells[x, y].Status = CellStatus.Missed;       
-            
+
             UpdateProbabilityMap(); // Recalculate probabilities based on the missed shot
         }
         private void Client_Winned()
@@ -133,7 +135,7 @@ namespace BattleShip.MVVM.Model
         private void ResetGame()
         {
             _battleGrid = new BattleGrid();
-            _opponentAgent.Reset();
+            _opponentPlayer.Reset();
             Array.Clear(_probabilityMap, 0, _probabilityMap.Length);
             _client.RequestNewGame();
         }
@@ -163,14 +165,13 @@ namespace BattleShip.MVVM.Model
 
         private Cell FindRandomCell()
         {
-            var random = new Random();
             int x, y;
 
             // Fire only even cells
             do
             {
-                x = random.Next(0, 9);
-                y = random.Next(0, 9);
+                x = _random.Next(0, 9);
+                y = _random.Next(0, 9);
             } while (_battleGrid.Cells[x, y].Status != CellStatus.Empty || (x + y) % 2 != 0);
 
             return _battleGrid.Cells[x, y];
@@ -184,7 +185,7 @@ namespace BattleShip.MVVM.Model
             var hitCells = _battleGrid.GetCells().Where(c => c.Status == CellStatus.Hit);
 
             // Adjust probabilities based on ship placements
-            foreach (int shipSize in _opponentAgent.ShipRules)
+            foreach (int shipSize in _opponentPlayer.ShipRules)
             {
                 int useSize = shipSize - 1;
 

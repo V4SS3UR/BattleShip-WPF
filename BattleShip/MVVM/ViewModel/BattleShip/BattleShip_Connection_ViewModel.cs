@@ -12,6 +12,7 @@ namespace WPF_App.MVVM.ViewModel
     {
         public event Action<BattleShipServer.Client> ConnectedToServer;
         public event Action PlayLocal;
+        public event Action PlayAuto;
 
         private bool _connecting; public bool Connecting
         {
@@ -36,6 +37,7 @@ namespace WPF_App.MVVM.ViewModel
 
         public ICommand ConnectCommand { get; set; }
         public ICommand PlayLocalCommand { get; set; }
+        public ICommand PlayAutoCommand { get; set; }
 
         private BattleShipServer.Client client;
 
@@ -52,6 +54,10 @@ namespace WPF_App.MVVM.ViewModel
 
             PlayLocalCommand = new RelayCommand(
                 async _ => await PlayLocalGame(),
+                _ => !Connecting && !Connected);
+
+            PlayAutoCommand = new RelayCommand(
+                _ => PlayAutoGame(),
                 _ => !Connecting && !Connected);
         }
 
@@ -76,6 +82,11 @@ namespace WPF_App.MVVM.ViewModel
         {
             PlayLocal?.Invoke();
             await ConnectToServer();
+        }
+
+        private void PlayAutoGame()
+        {
+            PlayAuto?.Invoke();
         }
     }
 }

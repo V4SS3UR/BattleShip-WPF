@@ -1,4 +1,5 @@
-﻿using BattleShipServer;
+﻿using BattleShip.MVVM.Model;
+using BattleShipServer;
 using System;
 using System.Collections.Generic;
 using System.Windows.Documents;
@@ -40,7 +41,7 @@ namespace WPF_App.MVVM.ViewModel
 
 
         private Player _player;
-        private Player _opponentAgent;
+        private OpponentAgent _autoPlayer;
 
         private Client _client;
         private List<(int X, int Y)> triedCells;
@@ -68,11 +69,6 @@ namespace WPF_App.MVVM.ViewModel
 
             _client.Winned += Client_Winned;
             _client.Lost += Client_Lost;
-        }
-
-        private void _client_Lost()
-        {
-            throw new NotImplementedException();
         }
 
         internal Player GetPlayer()
