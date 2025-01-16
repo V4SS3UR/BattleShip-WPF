@@ -345,6 +345,7 @@ namespace WPF_App.MVVM.View
                 for (int j = 0; j < 10; j++)
                 {
                     var cell = new BorderCell();
+                    cell.IsHitTestVisible = false;
                     cell.Name = $"probabilityMap{i}{j}";
                     cell.SetPosition(i, j);
                     cell.Opacity = 0.5;
