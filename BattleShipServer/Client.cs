@@ -20,14 +20,14 @@ namespace BattleShipServer
 
         // [GameStart]
         // [NewTurn]
-        // [Winned]
+        // [Won]
         // [Lost]
         // [NewGame]
 
         // [Message] (Sender) Message
 
         public event Action GameStart;
-        public event Action Winned;
+        public event Action Won;
         public event Action Lost;
         public event Action NewGame;
         public event Action<bool> NewTurn;
@@ -62,7 +62,7 @@ namespace BattleShipServer
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
-                throw ex;
+                throw;
             }
         }
 
@@ -158,9 +158,9 @@ namespace BattleShipServer
 
                 NewTurn?.Invoke(myTurn);
             }
-            else if (command.Contains("[Winned]"))
+            else if (command.Contains("[Won]"))
             {
-                Winned?.Invoke();
+                Won?.Invoke();
             }
             else if (command.Contains("[Lost]"))
             {

@@ -43,10 +43,11 @@ namespace WPF_App.MVVM.ViewModel
 
         private string GetAssemblyVersion()
         {
-            string assemblyNameVersionMajor = Assembly.GetExecutingAssembly().GetName().Version.Major.ToString();
-            string assemblyNameVersionMinor = Assembly.GetExecutingAssembly().GetName().Version.Minor.ToString();
-            string assemblyNameVersionBuild = Assembly.GetExecutingAssembly().GetName().Version.Build.ToString();
-            string assemblyNameVersionRevision = Assembly.GetExecutingAssembly().GetName().Version.Revision.ToString();
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            string assemblyNameVersionMajor = version.Major.ToString();
+            string assemblyNameVersionMinor = version.Minor.ToString();
+            string assemblyNameVersionBuild = version.Build.ToString();
+            string assemblyNameVersionRevision = version.Revision.ToString();
 
             string version = $"v{assemblyNameVersionMajor}.{assemblyNameVersionMinor}";
 

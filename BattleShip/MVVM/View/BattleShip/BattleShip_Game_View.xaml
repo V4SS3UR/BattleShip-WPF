@@ -163,7 +163,7 @@
                                 <Setter Property="Visibility" Value="Hidden"/>
                                 <Setter Property="Background" Value="#2FFF"/>
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsWinned}" Value="true">
+                                    <DataTrigger Binding="{Binding IsWon}" Value="true">
                                         <Setter Property="Visibility" Value="Visible"/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding IsLost}" Value="true">
@@ -178,7 +178,7 @@
                                 <TextBlock.Style>
                                     <Style TargetType="TextBlock">
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsWinned}" Value="true">
+                                            <DataTrigger Binding="{Binding IsWon}" Value="true">
                                                 <Setter Property="Text" Value="Gagné !"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding IsLost}" Value="true">

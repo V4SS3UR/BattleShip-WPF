@@ -8,14 +8,14 @@ namespace WPF_App.MVVM.ViewModel
 {
     internal class BattleShip_Game_ViewModel : ObservableObject
     {
-        public event Action<int, int> OpponentHitted;
+        public event Action<int, int> OpponentHit;
         public event Action<int, int, bool, int> OpponentSunk;
         public event Action<int, int> OpponentMissed;
-        public event Action<int, int> PlayerHitted;
+        public event Action<int, int> PlayerHit;
         public event Action<int, int, bool, int> PlayerSunk;
         public event Action<int, int> PlayerMissed;
 
-        public event Action Winned;
+        public event Action Won;
         public event Action Lost;
 
         private bool _isMyTurn; public bool IsMyTurn
@@ -24,10 +24,10 @@ namespace WPF_App.MVVM.ViewModel
             set { _isMyTurn = value; OnPropertyChanged(); }
         }
 
-        private bool _isWinned; public bool IsWinned
+        private bool _isWon; public bool IsWon
         {
-            get => _isWinned;
-            set { _isWinned = value; OnPropertyChanged(); }
+            get => _isWon;
+            set { _isWon = value; OnPropertyChanged(); }
         }
         private bool _isLost; public bool IsLost
         {
@@ -47,7 +47,7 @@ namespace WPF_App.MVVM.ViewModel
         {
             NewGameCommand = new RelayCommand(
                 _ => NewGame(),
-                _ => IsLost || IsWinned);
+                _ => IsLost || IsWon);
         }
 
         internal void SetClient(Client client)
@@ -59,7 +59,7 @@ namespace WPF_App.MVVM.ViewModel
             _client.Sunk += Client_Sunk;
             _client.Miss += Client_Miss;
 
-            _client.Winned += Client_Winned;
+            _client.Won += Client_Won;
             _client.Lost += Client_Lost;
         }    
 
@@ -89,13 +89,13 @@ namespace WPF_App.MVVM.ViewModel
         }
 
 
-        private void Client_Winned()
+        private void Client_Won()
         {
             App.Current.Dispatcher.Invoke(() =>
             {
-                _player.State = PlayerState.Winned;
-                IsWinned = true;
-                Winned?.Invoke();
+                _player.State = PlayerState.Won;
+                IsWon = true;
+                Won?.Invoke();
                 ToastManager.Toast.GetToast("BattleShipToast").ShowSuccessToast("You won the game!", "Congratulations!", true);
             });
         }
@@ -119,12 +119,12 @@ namespace WPF_App.MVVM.ViewModel
             if (IsMyTurn)
             {
                 // I hit the opponent
-                OpponentHitted?.Invoke(arg1, arg2);
+                OpponentHit?.Invoke(arg1, arg2);
             }
             else
             {
                 // Opponent hit me
-                PlayerHitted?.Invoke(arg1, arg2);
+                PlayerHit?.Invoke(arg1, arg2);
             }
         }
         private void Client_Sunk(int arg1, int arg2, bool isHorizontal, int size)

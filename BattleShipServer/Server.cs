@@ -106,6 +106,11 @@ namespace BattleShipServer
                 return;
             }
 
+            if (game == null)
+            {
+                return;
+            }
+
             switch (game.gameState)
             {
                 case GameState.PlacingShips:
@@ -223,7 +228,7 @@ namespace BattleShipServer
 
                             var opponentConnection = playerConnections.Find(p => p.Player != playerConnection.Player);
 
-                            playerConnection.SendMessage("[Winned]");
+                            playerConnection.SendMessage("[Won]");
                             opponentConnection.SendMessage("[Lost]");
 
                             game.gameState = GameState.Ending;
@@ -255,8 +260,7 @@ namespace BattleShipServer
 
         private void SendMessage(PlayerConnection playerConnection, string message)
         {
-            var writer = new StreamWriter(playerConnection.TcpClient.GetStream(), Encoding.UTF8) { AutoFlush = true };
-            writer.WriteLine(message);
+            playerConnection.SendMessage(message);
             Console.WriteLine(message);
         }
     }

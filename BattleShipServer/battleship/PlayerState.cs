@@ -5,6 +5,6 @@
     ShipsPlaced,
     WaitingForTurn,
     TakingTurn,
-    Winned,
+    Won,
     Lost,
 }

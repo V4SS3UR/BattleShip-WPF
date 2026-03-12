@@ -97,8 +97,8 @@ namespace WPF_App.MVVM.ViewModel
             {
                 Ship ship = new Ship(shipSize);
                 bool isHorizontal = random.Next(2) == 0;
-                int x = random.Next(0,9);
-                int y = random.Next(0,9);
+                int x = random.Next(10);
+                int y = random.Next(10);
                 while (!_player.PlaceShip(ship, x, y, isHorizontal))
                 {
                     isHorizontal = random.Next(2) == 0;

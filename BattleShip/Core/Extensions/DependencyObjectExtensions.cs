@@ -132,7 +132,7 @@ namespace QuickGuide.Core.Extensions
 
         public static IEnumerable<T> FindVisualChildren<T>(this DependencyObject parent) where T : DependencyObject
         {
-            if (parent == null) yield return (T)Enumerable.Empty<T>();
+            if (parent == null) yield break;
             for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
             {
                 DependencyObject ithChild = VisualTreeHelper.GetChild(parent, i);

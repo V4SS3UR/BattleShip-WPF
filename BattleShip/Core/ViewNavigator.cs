@@ -64,7 +64,7 @@ namespace WPF_App.Core
             if (this._viewStack.Count > 1)
             {
                 this._viewStack.Pop();
-                this.NavigateToView(this._viewStack.Pop());
+                this.NavigateToView(this._viewStack.Peek());
             }
         }
 

@@ -61,6 +61,7 @@ namespace WPF_App.MVVM.ViewModel
             }
             catch (System.Exception ex)
             {
+                Console.WriteLine($"Connection failed: {ex.Message}");
                 Connecting = false;
             }
         }

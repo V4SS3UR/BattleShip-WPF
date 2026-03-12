@@ -29,10 +29,10 @@ namespace WPF_App.MVVM.View
         {
             InitializeComponent();
 
-            viewModel.OpponentHitted += ViewModel_OpponentHitted;
+            viewModel.OpponentHit += ViewModel_OpponentHit;
             viewModel.OpponentSunk += ViewModel_OpponentSunk;
             viewModel.OpponentMissed += ViewModel_OpponentMissed;
-            viewModel.PlayerHitted += ViewModel_PlayerHitted;
+            viewModel.PlayerHit += ViewModel_PlayerHit;
             viewModel.PlayerSunk += ViewModel_PlayerSunk;
             viewModel.PlayerMissed += ViewModel_PlayerMissed;
 
@@ -169,7 +169,7 @@ namespace WPF_App.MVVM.View
             shipBorder.RenderTransform.BeginAnimation(ScaleTransform.ScaleYProperty, scaleAnimation);
         }
 
-        private void ViewModel_OpponentHitted(int arg1, int arg2)
+        private void ViewModel_OpponentHit(int arg1, int arg2)
         {
             App.Current.Dispatcher.Invoke(() =>
             {
@@ -194,7 +194,7 @@ namespace WPF_App.MVVM.View
             });
         }
 
-        private void ViewModel_PlayerHitted(int arg1, int arg2)
+        private void ViewModel_PlayerHit(int arg1, int arg2)
         {
             App.Current.Dispatcher.Invoke(() =>
             {
